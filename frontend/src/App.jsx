@@ -7,6 +7,8 @@ import CustomerList from "./pages/Customers/CustomerList";
 import HouseDetails from "./pages/Houses/HouseDetails";
 import HouseForm from "./pages/Houses/HouseForm";
 import OwnerList from "./pages/Owners/OwnerList";
+import Areas from "./pages/Areas/Areas";
+
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +24,7 @@ function App() {
         <Route path="/houses/add" element={<HouseForm />} />
         <Route path="/houses/edit" element={<HouseForm />} />
         <Route path="/owners" element={<OwnerList />} />
+        <Route path="/areas" element={<Areas />} />
       </Routes>
     </BrowserRouter>
   );
