@@ -35,7 +35,11 @@ function Areas() {
   };
 
   useEffect(() => {
-    fetchRegions();
+    const loadRegions = async () => {
+      await fetchRegions();
+    };
+
+    loadRegions();
   }, []);
 
   // =========================

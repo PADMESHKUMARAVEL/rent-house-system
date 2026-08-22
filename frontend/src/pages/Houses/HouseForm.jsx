@@ -258,7 +258,7 @@ const handleOwnerPhoneChange = async (e) => {
   };
 
   return (
-    <div>
+    <div className="page-shell house-form-page">
       <h1>
         {existingHouse ? "Edit House" : "Add House"}
       </h1>

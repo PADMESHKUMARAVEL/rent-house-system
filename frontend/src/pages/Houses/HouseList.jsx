@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_FRONTEND_API_URL;
-console.log("API URL:", API_URL);
 function HouseList() {
   const navigate = useNavigate();
   const [houses, setHouses] = useState([]);
@@ -174,22 +173,19 @@ const handleDelete = async (houseId) => {
   };
 
   return (
-    <div>
-
-      
-       <div>
-    <h1>Houses</h1>
-
-    <button onClick={() =>
+    <div className="page-shell">
+      <div className="page-header content-width">
+        <div><p className="eyebrow">Live inventory</p><h1>Houses</h1><p className="page-subtitle">{filteredHouses.length} homes match your current view.</p></div>
+        <button onClick={() =>
     navigate("/houses/add", {
       state: { house: null },
     })
   }>
-      Add House
-    </button>
-  </div>
+          Add house <span>＋</span>
+        </button>
+      </div>
       {/* Filters */}
-      <div>
+      <div className="filter-bar content-width">
         <select
           value={region}
           onChange={handleRegionChange}
@@ -258,10 +254,9 @@ const handleDelete = async (houseId) => {
         </button>
       </div>
 
-      <br />
-
       {/* Houses Table */}
-      <table border="1" cellPadding="10">
+      <div className="table-wrap content-width">
+      <table>
         <thead>
           <tr>
             <th>Street</th>
@@ -292,20 +287,21 @@ const handleDelete = async (houseId) => {
                 <td>
                   <button onClick={() => navigate(`/houses/details/${house.house_id}`)}>
                   View Details</button>
-                   <button>Edit</button>
-                   <button onClick={() => handleDelete(house.house_id)}>Delete</button>
+                   <button className="secondary-button" onClick={() => navigate("/houses/edit", { state: { house } })}>Edit</button>
+                   <button className="danger-button" onClick={() => handleDelete(house.house_id)}>Delete</button>
                   </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6">
+              <td colSpan="7">
                 No houses found
               </td>
             </tr>
           )}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

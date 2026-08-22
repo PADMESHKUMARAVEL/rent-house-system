@@ -31,7 +31,11 @@ function OwnerList() {
   };
 
   useEffect(() => {
-    fetchOwners();
+    const loadOwners = async () => {
+      await fetchOwners();
+    };
+
+    loadOwners();
   }, []);
 
   // Open Add Owner popup
@@ -139,7 +143,7 @@ function OwnerList() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="owner-page" style={{ padding: "20px" }}>
       <div
         style={{
           display: "flex",
@@ -222,7 +226,7 @@ function OwnerList() {
             alignItems: "center",
           }}
         >
-          <div
+          <div className="owner-modal"
             style={{
               backgroundColor: "white",
               padding: "25px",

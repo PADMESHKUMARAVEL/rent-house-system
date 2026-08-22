@@ -7,7 +7,6 @@ function CustomerList() {
   const [regions, setRegions] = useState([]);
 const [suitableHouses, setSuitableHouses] = useState([]);
 const [showSuitableHouses, setShowSuitableHouses] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerDetails, setCustomerDetails] = useState(null);
 
   const [showForm, setShowForm] = useState(false);
@@ -48,23 +47,6 @@ const [showSuitableHouses, setShowSuitableHouses] = useState(false);
       }
     } catch (error) {
       console.error("Error fetching customers:", error);
-    }
-  };
-
-  // =========================
-  // FETCH REGIONS
-  // =========================
-
-  const fetchRegions = async () => {
-    try {
-      const response = await fetch(`${API_URL}/regions`);
-      const data = await response.json();
-
-      if (response.ok) {
-        setRegions(data);
-      }
-    } catch (error) {
-      console.error("Error fetching regions:", error);
     }
   };
 
@@ -129,7 +111,6 @@ const [showSuitableHouses, setShowSuitableHouses] = useState(false);
 
       if (response.ok) {
         setCustomerDetails(data);
-        setSelectedCustomer(data);
       } else {
         alert(data.message || "Failed to fetch customer details");
       }
@@ -345,7 +326,7 @@ const [showSuitableHouses, setShowSuitableHouses] = useState(false);
   });
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="customer-page" style={{ padding: "20px" }}>
       {/* HEADER */}
 
       <div
@@ -513,7 +494,7 @@ const [showSuitableHouses, setShowSuitableHouses] = useState(false);
             zIndex: 1000,
           }}
         >
-          <div
+          <div className="customer-modal"
             style={{
               backgroundColor: "white",
               padding: "25px",
@@ -639,7 +620,7 @@ const [showSuitableHouses, setShowSuitableHouses] = useState(false);
       zIndex: 1100,
     }}
   >
-    <div
+    <div className="customer-modal"
       style={{
         backgroundColor: "white",
         padding: "25px",
@@ -732,7 +713,7 @@ const [showSuitableHouses, setShowSuitableHouses] = useState(false);
             zIndex: 1000,
           }}
         >
-          <div
+          <div className="customer-modal customer-form-modal"
             style={{
               backgroundColor: "white",
               padding: "25px",
