@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
+    addOwner,
     getAllOwners,
     getHousesByOwner,
     getSuitableCustomers,
@@ -10,7 +11,8 @@ const {
      getOwnerByPhone
 } = require("../controllers/ownerController");
 
-
+//add owner
+router.post("/", addOwner);
 // Get all owners
 router.get("/", getAllOwners);
 

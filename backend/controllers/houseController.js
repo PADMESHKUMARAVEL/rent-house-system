@@ -377,25 +377,45 @@ const getHousesByOwner = async (req, res) => {
 };
 
 
-// 8. Get suitable houses for a customer
-const getSuitableHousesForCustomer = async (req, res) => {
+// 8. Get suitable customers for house
+const getSuitableCustomersForHouse = async (req, res) => {
     try {
-        const { customerId } = req.params;
-
+        const { houseId } = req.params;
+        console.log("House ID:", houseId);
+        // Check whether house exists
         const [houses] = await db.query(
+            `SELECT house_id
+             FROM houses
+             WHERE house_id = ?`,
+            [houseId]
+        );
+
+        if (houses.length === 0) {
+            return res.status(404).json({
+                message: "House not found"
+            });
+        }
+
+        const [customers] = await db.query(
             `
             SELECT DISTINCT
-                h.*,
-                o.owner_name,
-                o.phone_number,
-                o.other_phone_number,
-                r.region_name,
-                s.street_name
-            FROM customers c
+                c.customer_id,
+                c.customer_name,
+                c.customer_type,
+                c.no_of_persons,
+                c.phone_number,
+                c.job,
+                c.salary,
+                c.preferred_rental_type,
+                c.preferred_rent_price,
+                c.preferred_bokkiyam_amount,
+                c.other_preferences
 
-            JOIN houses h
+            FROM houses h
+
+            JOIN customers c
                 ON (
-                    -- Customer has no preferred regions
+                    -- No preferred regions = ANY region
                     NOT EXISTS (
                         SELECT 1
                         FROM customer_preferred_regions cpr
@@ -404,7 +424,7 @@ const getSuitableHousesForCustomer = async (req, res) => {
 
                     OR
 
-                    -- Customer has preferred regions
+                    -- House region matches customer's preferred region
                     EXISTS (
                         SELECT 1
                         FROM customer_preferred_regions cpr
@@ -413,66 +433,37 @@ const getSuitableHousesForCustomer = async (req, res) => {
                     )
                 )
 
-            JOIN owners o
-                ON h.owner_id = o.owner_id
-
-            JOIN regions r
-                ON h.region_id = r.region_id
-
-            JOIN streets s
-                ON h.street_id = s.street_id
-
-            WHERE c.customer_id = ?
+            WHERE h.house_id = ?
               AND h.is_available = TRUE
 
               AND (
-                    -- Customer prefers RENT
+                    -- RENT matching
                     (
-                        c.preferred_rental_type = 'RENT'
-                        AND h.rental_type IN ('RENT', 'ANY')
+                        h.rental_type IN ('RENT', 'ANY')
+                        AND c.preferred_rental_type IN ('RENT', 'ANY')
                         AND h.rent_amount <= c.preferred_rent_price
                     )
 
                     OR
 
-                    -- Customer prefers BOKKIYAM
+                    -- BOKKIYAM matching
                     (
-                        c.preferred_rental_type = 'BOKKIYAM'
-                        AND h.rental_type IN ('BOKKIYAM', 'ANY')
+                        h.rental_type IN ('BOKKIYAM', 'ANY')
+                        AND c.preferred_rental_type IN ('BOKKIYAM', 'ANY')
                         AND h.bokkiyam_amount <= c.preferred_bokkiyam_amount
-                    )
-
-                    OR
-
-                    -- Customer accepts ANY rental type
-                    (
-                        c.preferred_rental_type = 'ANY'
-                        AND (
-                            (
-                                h.rental_type IN ('RENT', 'ANY')
-                                AND h.rent_amount <= c.preferred_rent_price
-                            )
-
-                            OR
-
-                            (
-                                h.rental_type IN ('BOKKIYAM', 'ANY')
-                                AND h.bokkiyam_amount <= c.preferred_bokkiyam_amount
-                            )
-                        )
                     )
                 )
             `,
-            [customerId]
+            [houseId]
         );
 
-        res.status(200).json(houses);
+        res.status(200).json(customers);
 
     } catch (error) {
         console.error(error);
 
         res.status(500).json({
-            message: "Error finding suitable houses"
+            message: "Error finding suitable customers"
         });
     }
 };
@@ -537,6 +528,7 @@ module.exports = {
     deleteHouse,
     getHousesByRegion,
     getHousesByOwner,
+    getSuitableCustomersForHouse,
     updateHouseColumn,
-    getSuitableHousesForCustomer
+    
 };

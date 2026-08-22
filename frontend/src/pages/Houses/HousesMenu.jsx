@@ -1,10 +1,23 @@
+import { useNavigate } from "react-router-dom";
+
 function HousesMenu() {
+  const navigate = useNavigate();
+
   return (
     <div>
       <h1>Houses Page</h1>
-      <button>View Houses</button>
-      <button>View Owners</button>
-      <button>View Areas</button>
+
+      <button onClick={() => navigate("/houses/list")}>
+        View Houses
+      </button>
+
+      <button onClick={() => navigate("/owners")}>
+        View Owners
+      </button>
+
+      <button onClick={() => navigate("/areas")}>
+        View Areas
+      </button>
     </div>
   );
 }

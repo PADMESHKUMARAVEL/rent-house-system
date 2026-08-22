@@ -27,6 +27,7 @@ POST    /houses                          → Add house
 GET     /houses                          → Get all houses
 GET     /houses/region/:regionId         → Get houses in region
 GET     /houses/owner/:ownerId           → Get houses by owner
+GET     /houses/customer/:houseId        -> Get suitable customers for house
 GET     /houses/:id                      → Get house details
 PUT     /houses/:id                      → Update house
 PATCH   /houses/:id                      → Update one house column

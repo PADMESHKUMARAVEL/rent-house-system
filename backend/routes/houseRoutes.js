@@ -9,8 +9,9 @@ const {
     deleteHouse,
     getHousesByRegion,
     getHousesByOwner,
+    getSuitableCustomersForHouse,
     updateHouseColumn,
-    getSuitableHousesForCustomer
+    
 } = require("../controllers/houseController");
 
 
@@ -26,8 +27,8 @@ router.get("/region/:regionId", getHousesByRegion);
 // Get houses by owner
 router.get("/owner/:ownerId", getHousesByOwner);
 
-// Get suitable houses for customer
-router.get("/customer/:customerId", getSuitableHousesForCustomer);
+// Get suitable customers for house
+router.get("/customer/:houseId", getSuitableCustomersForHouse);
 
 // Get house by ID
 router.get("/:id", getHouseById);

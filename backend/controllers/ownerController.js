@@ -1,6 +1,71 @@
 const db = require("../config/db");
 
+//add owner
+const addOwner = async (req, res) => {
+    try {
+        const {
+            owner_name,
+            phone_number,
+            other_phone_number
+        } = req.body;
 
+        // Validate required fields
+        if (!owner_name || !phone_number) {
+            return res.status(400).json({
+                message: "Owner name and phone number are required"
+            });
+        }
+
+        // Check whether either phone number already exists
+        const [existingOwners] = await db.query(
+            `SELECT owner_id
+             FROM owners
+             WHERE phone_number = ?
+                OR other_phone_number = ?
+                OR phone_number = ?
+                OR other_phone_number = ?`,
+            [
+                phone_number,
+                phone_number,
+                other_phone_number || null,
+                other_phone_number || null
+            ]
+        );
+
+        if (existingOwners.length > 0) {
+            return res.status(409).json({
+                message: "Owner with this phone number already exists"
+            });
+        }
+
+        // Insert owner
+        const [result] = await db.query(
+            `INSERT INTO owners (
+                owner_name,
+                phone_number,
+                other_phone_number
+            )
+            VALUES (?, ?, ?)`,
+            [
+                owner_name,
+                phone_number,
+                other_phone_number || null
+            ]
+        );
+
+        res.status(201).json({
+           message: "Owner added successfully",
+  owner_id: result.insertId,
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            message: "Error adding owner"
+        });
+    }
+};
 // 1. Get all owners
 const getAllOwners = async (req, res) => {
     try {
@@ -279,6 +344,7 @@ const getOwnerByPhone = async (req, res) => {
     }
 };
 module.exports = {
+    addOwner,
     getAllOwners,
     getHousesByOwner,
     getSuitableCustomers,

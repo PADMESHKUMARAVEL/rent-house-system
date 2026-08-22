@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
-const API_URL = import.meta.env.FRONTEND_API_URL;
-
+import { useNavigate } from "react-router-dom";
+const API_URL = import.meta.env.VITE_FRONTEND_API_URL;
+console.log("API URL:", API_URL);
 function HouseList() {
+  const navigate = useNavigate();
   const [houses, setHouses] = useState([]);
   const [regions, setRegions] = useState([]);
   const [streets, setStreets] = useState([]);
@@ -13,35 +15,31 @@ function HouseList() {
   const [category, setCategory] = useState("");
   const [rentalType, setRentalType] = useState("");
 
- 
-  const fetchHouses = async () => {
-    try {
-      const response = await fetch(`${API_URL}/houses`);
-      const data = await response.json();
-
-      setHouses(data);
-    } catch (error) {
-      console.error("Error fetching houses:", error);
-    }
-  };
-
-  const fetchRegions = async () => {
-    try {
-      const response = await fetch(`${API_URL}/regions`);
-      const data = await response.json();
-
-      setRegions(data);
-    } catch (error) {
-      console.error("Error fetching regions:", error);
-    }
-  };
   useEffect(() => {
-    const loadInitialData = async () => {
-      await Promise.all([fetchHouses(), fetchRegions()]);
-    };
+  const loadData = async () => {
+    try {
+      const housesResponse = await fetch(`${API_URL}/houses`);
+      const regionsResponse = await fetch(`${API_URL}/regions`);
 
-    loadInitialData();
-  }, []);
+      const housesText = await housesResponse.text();
+      const regionsText = await regionsResponse.text();
+
+      console.log("HOUSES RESPONSE:", housesText);
+      console.log("REGIONS RESPONSE:", regionsText);
+
+      const housesData = JSON.parse(housesText);
+      const regionsData = JSON.parse(regionsText);
+
+      setHouses(housesData);
+      setRegions(regionsData);
+    } catch (error) {
+      console.error("Error loading data:", error);
+    }
+  };
+
+  loadData();
+}, []);
+     
   const handleRegionChange = async (e) => {
     const selectedRegion = e.target.value;
 
@@ -63,7 +61,43 @@ function HouseList() {
       }
     }
   };
+const handleDelete = async (houseId) => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this house?"
+  );
 
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(
+      `${API_URL}/houses/${houseId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Failed to delete house"
+      );
+    }
+
+    alert("House deleted successfully");
+
+    // Remove deleted house from the table
+    setHouses((prevHouses) =>
+      prevHouses.filter(
+        (house) => house.house_id !== houseId
+      )
+    );
+
+  } catch (error) {
+    console.error("Delete error:", error);
+    alert(error.message);
+  }
+};
   const filteredHouses = houses.filter((house) => {
     if (
       region !== "" &&
@@ -141,8 +175,19 @@ function HouseList() {
 
   return (
     <div>
-      <h1>Houses</h1>
 
+      
+       <div>
+    <h1>Houses</h1>
+
+    <button onClick={() =>
+    navigate("/houses/add", {
+      state: { house: null },
+    })
+  }>
+      Add House
+    </button>
+  </div>
       {/* Filters */}
       <div>
         <select
@@ -225,6 +270,7 @@ function HouseList() {
             <th>Type</th>
             <th>Rent / Bokkiyam</th>
             <th>Rent</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
@@ -243,6 +289,12 @@ function HouseList() {
                 <td>{house.rental_type}</td>
 
                 <td>{getAmount(house)}</td>
+                <td>
+                  <button onClick={() => navigate(`/houses/details/${house.house_id}`)}>
+                  View Details</button>
+                   <button>Edit</button>
+                   <button onClick={() => handleDelete(house.house_id)}>Delete</button>
+                  </td>
               </tr>
             ))
           ) : (
