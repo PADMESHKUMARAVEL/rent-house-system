@@ -1,0 +1,23 @@
+.home-container {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: 20px;
+}
+
+.home-container h1 {
+  margin-bottom: 30px;
+}
+
+.home-container button {
+  width: 250px;
+  padding: 15px;
+
+  font-size: 18px;
+  cursor: pointer;
+}

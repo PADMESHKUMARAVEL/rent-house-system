@@ -1,0 +1,42 @@
+REGIONS
+POST    /regions                         → Add region
+GET     /regions                         → Get all regions
+PUT     /regions/:id                     → Update region
+DELETE  /regions/:id                     → Delete region
+
+
+STREETS
+GET     /streets                         → Get all streets
+GET     /streets/region/:regionId        → Get streets in a region
+POST    /streets/region/:regionId        → Add street to region
+PUT     /streets/:id                     → Update street
+
+
+OWNERS
+POST    /owners                          → Add owner
+GET     /owners                          → Get all owners
+GET     /owners/phone/:phoneNumber       → Find owner by either phone number
+GET     /owners/:id/houses               → Get owner's houses
+GET     /owners/:id/customers            → Get suitable customers
+PUT     /owners/:id                      → Update owner
+DELETE  /owners/:id                      → Delete owner
+
+
+HOUSES
+POST    /houses                          → Add house
+GET     /houses                          → Get all houses
+GET     /houses/region/:regionId         → Get houses in region
+GET     /houses/owner/:ownerId           → Get houses by owner
+GET     /houses/:id                      → Get house details
+PUT     /houses/:id                      → Update house
+PATCH   /houses/:id                      → Update one house column
+DELETE  /houses/:id                      → Delete house
+
+
+CUSTOMERS
+POST    /customers                       → Add customer
+GET     /customers                       → Get all customers
+GET     /customers/:id                   → Get customer details
+GET     /customers/:id/suitable-houses   → Get suitable houses
+PUT     /customers/:id                   → Update customer
+DELETE  /customers/:id                   → Delete customer
